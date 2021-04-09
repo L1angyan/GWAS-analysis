@@ -41,19 +41,24 @@ python3 mergefam_sample.py
 
 
 # Perform association analysis
-gemma-0.98.1-linux-static -bfile clean_snp -gk 1 -o kinship
-#calculate kinship matrix as covariate. -gk parameter assign different method to calculate kinship default 1. If the SNPs are with small MAF but large effect, -gk 2 is more suitable.
+gemma-0.98.1-linux-static -bfile clean_snp -gk 1 -o kinship                                                                                                                   #calculate kinship matrix as covariate. -gk parameter assign different method to calculate kinship default 1. If the SNPs are with small MAF but large effect, -gk 2 is more suitable.
 
 
-gemma-0.98.1-linux-static -bfile clean_snp -lmm -k ./output/kinship.cXX.txt -o GWAS
-#Association analysis. The GWAS.assoc.txt is the result we need.
+gemma-0.98.1-linux-static -bfile clean_snp -lmm -k ./output/kinship.cXX.txt -o GWAS                                                                                             #Association analysis. The GWAS.assoc.txt is the result we need.
 ![QQ图片20210409104920](https://user-images.githubusercontent.com/46277338/114121762-8c322880-9921-11eb-8608-bc2b8ae841a6.png)
 
 
 # Plot
 rawdf<-read.table("GWAS_results.assoc.txt",header=T,sep="\t")
-df<-data.frame(rs=rawdf$rs,chr=rawdf$chr,pos=rawdf$ps,pvalue=rawdf$p_wald)
-install.packages("rMVP")
-library(rMVP)
-MVP.Report(df)
 
+df<-data.frame(rs=rawdf$rs,chr=rawdf$chr,pos=rawdf$ps,pvalue=rawdf$p_wald)
+
+install.packages("rMVP")
+
+library(rMVP)
+
+MVP.Report(df)                                                                                                                                                                #Generate 4 graphes, including qq plot, manhattan plot and SNP density.
+![pvalue SNP-Density](https://user-images.githubusercontent.com/46277338/114122031-0d89bb00-9922-11eb-8d25-9f5acd6124b3.jpg)
+![pvalue Rectangular-Manhattan](https://user-images.githubusercontent.com/46277338/114122042-111d4200-9922-11eb-91ab-8d4cb63b9e0e.jpg)
+![pvalue QQplot](https://user-images.githubusercontent.com/46277338/114122045-12e70580-9922-11eb-82c7-a859b1266251.jpg)
+![pvalue Circular-Manhattan](https://user-images.githubusercontent.com/46277338/114122048-137f9c00-9922-11eb-9c06-7a5e792f1c02.jpg)
