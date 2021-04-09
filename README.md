@@ -6,5 +6,5 @@ wget http://1001genomes.org/data/GMI-MPI/releases/v3.1/1001genomes_snp-short-ind
 #Download markers from 1001genome project.
 
 vcftools --gzvcf 1001genomes_snp-short-indel_only_ACGTN.vcf.gz \
---remove-indels --min-alleles 2 --max-alleles 2 --recode --keep sample.txt --out 172sample 
+--remove-indels --min-alleles 2 --max-alleles 2 --recode --keep sample.txt --out 172sample                                                                                         
 #Unzip the file and filter markers. Parameter --recode menas that markers passing the filteration were output. sample.txt includes the ID of inbred lines in this research, markers of which would be keep in output file in VCF format
