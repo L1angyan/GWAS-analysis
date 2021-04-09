@@ -2,6 +2,7 @@
 
 #GWAS is an statistical genetic approach to identified SNPs(marker in genome) associated with traits. Here, I am learning GWAS through repeating the analysis in: A new regulator of seed size control in Arabidopsis identified by a genome-wide association study. In this study, authors identified SNPs significantly associated to size of seed in 191 Arabidopsis inbred lines.
 
+# Clean data preparation
 wget http://1001genomes.org/data/GMI-MPI/releases/v3.1/1001genomes_snp-short-indel_only_ACGTN.vcf.gz
 #Download markers from 1001genome project.
 
@@ -28,6 +29,31 @@ plink --vcf 172sample_maf_filter_snpID.vcf --recode --out 172sample
 
 
 plink --file 172sample --indep 50 5 2;plink --file 172sample --extract plink.prune.in --recode --out 172sample_maf_filter_snpID_LD_filter
-#Prune and extracting SNPs passing filteration
+#Prune and extracting SNPs passing filteration. The first command would generate plink.prune.in including markers roughly linkage disdisequilibrium，prune.out including makers filtered. Here, marker filteration is completed.
 
+
+plink --file 172sample_maf_filter_snpID_LD_filter --make-bed --out clean_snp
+#--make-bed would genetated binary bed, bim and fam file. bed as well as bim file including SNPs infomation and fam is used to save phenotype data. Thus, I need to add the seed size of 172 Arabidopsis inbred lines.
+
+
+python3 mergefam_sample.py
+#Python scripts is used to add phenotype data to fam file. Phenotype data is avaiavle in supplement of the paper.
+
+
+# Perform association analysis
+gemma-0.98.1-linux-static -bfile clean_snp -gk 1 -o kinship
+#calculate kinship matrix as covariate. -gk parameter assign different method to calculate kinship default 1. If the SNPs are with small MAF but large effect, -gk 2 is more suitable.
+
+
+gemma-0.98.1-linux-static -bfile clean_snp -lmm -k ./output/kinship.cXX.txt -o GWAS
+#Association analysis. The GWAS.assoc.txt is the result we need.
+![QQ图片20210409104920](https://user-images.githubusercontent.com/46277338/114121762-8c322880-9921-11eb-8608-bc2b8ae841a6.png)
+
+
+# Plot
+rawdf<-read.table("GWAS_results.assoc.txt",header=T,sep="\t")
+df<-data.frame(rs=rawdf$rs,chr=rawdf$chr,pos=rawdf$ps,pvalue=rawdf$p_wald)
+install.packages("rMVP")
+library(rMVP)
+MVP.Report(df)
 
