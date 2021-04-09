@@ -19,3 +19,15 @@ vcftools --gzvcf 172sample_out.vcf.gz --maf 0.05 --recode --out 172sample_maf_fi
 #Filter SNP markers through the criterion of minnor allele frenquency > 0.05
 
 
+awk '{FS="\t";OFS="\t"}{if($0~"#"){print $0}else{$3=$1"_"$2;print $0}}' 172sample_maf_filter.recode.vcf > 172sample_maf_filter_snpID.vcf
+#Add ID in format of chr_position to the vcf file
+
+
+plink --vcf 172sample_maf_filter_snpID.vcf --recode --out 172sample
+#Transform vcf to binary format which could be recognized by PLINK
+
+
+plink --file 172sample --indep 50 5 2;plink --file 172sample --extract plink.prune.in --recode --out 172sample_maf_filter_snpID_LD_filter
+#Prune and extracting SNPs passing filteration
+
+
