@@ -1,8 +1,9 @@
 # Genome-wide association study(GWAS) using GEMMA
-
-#GWAS is an statistical genetic approach to identified SNPs(marker in genome) associated with traits. Here, I am learning GWAS through repeating the analysis in: A new regulator of seed size control in Arabidopsis identified by a genome-wide association study. In this study, authors identified SNPs significantly associated to size of seed in 191 Arabidopsis inbred lines.
+--------------------------
+GWAS is an statistical genetic approach to identified SNPs(marker in genome) associated with traits. Here, I am learning GWAS through repeating the analysis in: A new regulator of seed size control in Arabidopsis identified by a genome-wide association study. In this study, authors identified SNPs significantly associated to size of seed in 191 Arabidopsis inbred lines.
 
 # Clean data preparation
+```shell
 wget http://1001genomes.org/data/GMI-MPI/releases/v3.1/1001genomes_snp-short-indel_only_ACGTN.vcf.gz
 
 #Download markers from 1001genome project.
@@ -47,9 +48,10 @@ plink --file 172sample_maf_filter_snpID_LD_filter --make-bed --out clean_snp
 python3 mergefam_sample.py
 
 #Python scripts is used to add phenotype data to fam file. Phenotype data is avaiavle in supplement of the paper.
-
+```
 
 # Perform association analysis
+```shell
 gemma-0.98.1-linux-static -bfile clean_snp -gk 1 -o kinship
 
 #calculate kinship matrix as covariate. -gk parameter assign different method to calculate kinship default 1. If the SNPs are with small MAF but large effect, -gk 2 is more suitable.
@@ -58,10 +60,10 @@ gemma-0.98.1-linux-static -bfile clean_snp -gk 1 -o kinship
 gemma-0.98.1-linux-static -bfile clean_snp -lmm -k ./output/kinship.cXX.txt -o GWAS
 
 #Association analysis. The GWAS.assoc.txt is the result we need.
-![QQ图片20210409104920](https://user-images.githubusercontent.com/46277338/114121762-8c322880-9921-11eb-8608-bc2b8ae841a6.png)
-
+```
 
 # Plot
+```R
 rawdf<-read.table("GWAS_results.assoc.txt",header=T,sep="\t")
 
 df<-data.frame(rs=rawdf$rs,chr=rawdf$chr,pos=rawdf$ps,pvalue=rawdf$p_wald)
@@ -70,8 +72,6 @@ install.packages("rMVP")
 
 library(rMVP)
 
-MVP.Report(df)                                                                                                                                                                #Generate 4 graphes, including qq plot, manhattan plot and SNP density.
-![pvalue SNP-Density](https://user-images.githubusercontent.com/46277338/114122031-0d89bb00-9922-11eb-8d25-9f5acd6124b3.jpg)
-![pvalue Rectangular-Manhattan](https://user-images.githubusercontent.com/46277338/114122042-111d4200-9922-11eb-91ab-8d4cb63b9e0e.jpg)
-![pvalue QQplot](https://user-images.githubusercontent.com/46277338/114122045-12e70580-9922-11eb-82c7-a859b1266251.jpg)
-![pvalue Circular-Manhattan](https://user-images.githubusercontent.com/46277338/114122048-137f9c00-9922-11eb-9c06-7a5e792f1c02.jpg)
+MVP.Report(df)
+#Generate 4 graphes, including qq plot, manhattan plot and SNP density.
+```
