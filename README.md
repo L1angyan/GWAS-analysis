@@ -1,5 +1,5 @@
 # Genome-wide association study(GWAS) using GEMMA
---------------------------
+
 GWAS is an statistical genetic approach to identified SNPs(marker in genome) associated with traits. Here, I am learning GWAS through repeating the analysis in: A new regulator of seed size control in Arabidopsis identified by a genome-wide association study. In this study, authors identified SNPs significantly associated to size of seed in 191 Arabidopsis inbred lines.
 
 # Clean data preparation
